@@ -1,14 +1,14 @@
 <?php
 require_once('room.php');
 
-$roomArray = Room::loadFromJson('./room.json');
+$roomArray = Room::loadFromDatabase();
 ?>
 <body>
 <ol>
 <?php
 if(isset($_GET['id']))
 {
-    $room = Room::loadFromIdOnJson($_GET['id'], './room.json');
+    $room = Room::loadFromIdOnDatabase($_GET['id']);
     if($room == null)
     {
         ?>

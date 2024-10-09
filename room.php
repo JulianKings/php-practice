@@ -1,4 +1,7 @@
 <?php 
+
+require_once('mysql.php');
+
 class Room {
     public $id;
     public $type;
@@ -60,6 +63,11 @@ class Room {
         $this->description = $description;
     }
 
+    public function create()
+    {
+        MySQL::createRoom($this);
+    }
+
     public static function loadFromJson($file)
     {
         $roomFile = file_get_contents($file);
@@ -69,10 +77,73 @@ class Room {
 
         foreach($roomArray as $room)
         {
-            $room = new Room($room->id, $room->type, $room->floor, $room->number, $room->images,
+            $roomResult = new Room($room->id, $room->type, $room->floor, $room->number, $room->images,
                 $room->price, $room->offer, $room->status, $room->description);
 
-            array_push($resultRoomArray, $room);
+            array_push($resultRoomArray, $roomResult);
+        }
+
+        return $resultRoomArray;
+    }
+
+    public static function loadFromIdOnJson($id, $file)
+    {
+        $roomArray = Room::loadFromJson($file);
+
+        $result = null;
+
+        foreach($roomArray as $room)
+        {
+            if($room->id == $id)
+            {
+                $result = $room;
+            }
+        }
+
+        return $result;
+    }
+
+    public static function loadFromDatabase()
+    {
+        $roomArray = MySQL::runFetchArrayQuery("SELECT * FROM rooms");
+        $resultRoomArray = array();
+
+        foreach($roomArray as $room)
+        {
+            $roomResult = new Room($room['id'], $room['type'], $room['floor'], $room['number'], $room['images'],
+                $room['price'], $room['offer'], $room['status'], $room['description']);
+
+            array_push($resultRoomArray, $roomResult);
+        }
+
+        return $resultRoomArray;
+    }
+
+    public static function loadFromIdOnDatabase($id)
+    {
+        $roomData = MySQL::runFetchRowQueryWithParam("SELECT * FROM rooms WHERE id = ?", $id);
+        $roomResult = null;
+
+        if(isset($roomData))
+        {
+            $roomResult = new Room($roomData['id'], $roomData['type'], $roomData['floor'], $roomData['number'], $roomData['images'],
+                $roomData['price'], $roomData['offer'], $roomData['status'], $roomData['description']);
+        }
+
+        return $roomResult;
+    }
+
+    public static function loadFromSearchQueryOnDatabase($query)
+    {
+        $roomArray = MySQL::runFetchArrayQueryWithParams("SELECT * FROM rooms WHERE type LIKE CONCAT( '%',?,'%') OR number LIKE CONCAT( '%',?,'%')", $query, $query);
+        $resultRoomArray = array();
+
+        foreach($roomArray as $room)
+        {
+            $roomResult = new Room($room['id'], $room['type'], $room['floor'], $room['number'], $room['images'],
+                $room['price'], $room['offer'], $room['status'], $room['description']);
+
+            array_push($resultRoomArray, $roomResult);
         }
 
         return $resultRoomArray;
