@@ -1,6 +1,8 @@
 <?php
 require_once('room.php');
 
+MySQL::generateConnection();
+
 $roomArray = Room::loadFromDatabase();
 ?>
 <body>
@@ -25,6 +27,8 @@ foreach($roomArray as $room)
 </li>
 <?php
 }
+
+MySQL::closeConnection();
 ?>
 </ol>
 </body>

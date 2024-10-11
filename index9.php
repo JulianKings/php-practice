@@ -1,5 +1,6 @@
 <?php
 require_once('room.php');
+MySQL::generateConnection();
 
 $roomArray = Room::loadFromDatabase();
 ?>
@@ -70,5 +71,7 @@ if(isset($_POST['type']))
 </form>
 <?php
 }
+
+MySQL::closeConnection();
 ?>
 </body>

@@ -1,6 +1,8 @@
 <?php
 require_once('room.php');
 
+MySQL::generateConnection();
+
 $roomArray = Room::loadFromDatabase();
 ?>
 <body>
@@ -54,6 +56,8 @@ if(isset($_GET['id']))
 <?php
     }
 }
+
+MySQL::closeConnection();
 ?>
 </ol>
 </body>
