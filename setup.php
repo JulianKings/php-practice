@@ -10,8 +10,4 @@ $roomArray = Room::loadFromDatabase();
 
 $blade = new BladeOne(__DIR__.'/views', __DIR__.'/cache', BladeOne::MODE_DEBUG);
 
-echo $blade->run("index", array('roomArray'=>$roomArray));
-
-MySQL::closeConnection();
-
 ?>
